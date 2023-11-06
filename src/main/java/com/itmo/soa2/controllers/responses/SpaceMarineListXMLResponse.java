@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class SpaceMarineListXMLResponse implements XMLResponse{
 
-    @XmlElement(name="spaceMarine")
+    @XmlElement(name="spaceMarines")
     private List<SpaceMarine> spaceMarines;
 
     public SpaceMarineListXMLResponse(List<SpaceMarine> spaceMarines){

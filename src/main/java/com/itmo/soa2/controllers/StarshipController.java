@@ -21,9 +21,9 @@ public class StarshipController {
     @Autowired
     StarshipService starshipService;
 
-    @PostMapping("/{name}")
-    public ResponseEntity createStarship(@PathVariable("name") String name, @RequestBody StarshipRequest starshipRequest){
-        XMLResponse response = starshipService.save(starshipRequest);
+    @PostMapping("{id}/{name}")
+    public ResponseEntity createStarship(@PathVariable("id") Integer id, @PathVariable("name") String name){
+        XMLResponse response = starshipService.save(id, name);
         try {
             return new ResponseEntity(parser.convertToXML(response), HttpStatus.valueOf(response.getCode()));
         } catch (JAXBException e) {

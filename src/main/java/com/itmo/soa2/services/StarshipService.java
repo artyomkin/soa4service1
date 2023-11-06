@@ -24,13 +24,15 @@ public class StarshipService {
     @Autowired
     SpaceMarineRepository spaceMarineRepository;
 
-    public XMLResponse save(StarshipRequest starshipRequest){
-        if (starshipRepo.findById(starshipRequest.getId()).isPresent()){
+    public XMLResponse save(Integer id, String name){
+        if (starshipRepo.findById(id).isPresent()){
             StarshipWrongFieldsXMLResponse response = new StarshipWrongFieldsXMLResponse();
             response.setWrongFields(Arrays.asList("id"));
             return response;
         }
-        Starship starship = new Starship(starshipRequest);
+        Starship starship = new Starship();
+        starship.setId(id);
+        starship.setName(name);
         StarshipXMLResponse response = new StarshipXMLResponse();
         response.setStarships(Arrays.asList(starshipRepo.save(starship)));
         return response;

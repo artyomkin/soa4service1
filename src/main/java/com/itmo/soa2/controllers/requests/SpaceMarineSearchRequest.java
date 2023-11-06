@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Data

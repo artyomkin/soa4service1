@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -124,44 +125,49 @@ public class SpaceMarinesController {
     }
 
 
-    @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity handleBindException(ConstraintViolationException exception) throws JAXBException {
-        SpaceMarineSearchWrongFieldsXMLResponse response = new SpaceMarineSearchWrongFieldsXMLResponse();
-        List<String> constraintViolations = exception.getConstraintViolations().stream()
-                .map(violation -> violation.getMessage())
-                .collect(Collectors.toList());
-        response.setWrongFields(constraintViolations);
-        return ResponseEntity.badRequest().body(parser.convertToXML(response));
-    }
+    //@ExceptionHandler({ConstraintViolationException.class})
+    //public ResponseEntity handleBindException(ConstraintViolationException exception) throws JAXBException {
+    //    SpaceMarineSearchWrongFieldsXMLResponse response = new SpaceMarineSearchWrongFieldsXMLResponse();
+    //    List<String> constraintViolations = exception.getConstraintViolations().stream()
+    //            .map(violation -> violation.getMessage())
+    //            .collect(Collectors.toList());
+    //    response.setWrongFields(constraintViolations);
+    //    return ResponseEntity.badRequest().body(parser.convertToXML(response));
+    //}
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity handleMethodException(MethodArgumentNotValidException exception) throws JAXBException {
-        SpaceMarineSearchWrongFieldsXMLResponse response = new SpaceMarineSearchWrongFieldsXMLResponse();
-        List<String> constraintViolations = exception.getBindingResult().getAllErrors().stream()
-                .map(error -> error.getDefaultMessage())
-                .collect(Collectors.toList());
-        response.setWrongFields(constraintViolations);
-        return ResponseEntity.badRequest().body(parser.convertToXML(response));
-    }
+    //@ExceptionHandler({MethodArgumentNotValidException.class})
+    //public ResponseEntity handleMethodException(MethodArgumentNotValidException exception) throws JAXBException {
+    //    SpaceMarineSearchWrongFieldsXMLResponse response = new SpaceMarineSearchWrongFieldsXMLResponse();
+    //    List<String> constraintViolations = exception.getBindingResult().getAllErrors().stream()
+    //            .map(error -> error.getDefaultMessage())
+    //            .collect(Collectors.toList());
+    //    response.setWrongFields(constraintViolations);
+    //    return ResponseEntity.badRequest().body(parser.convertToXML(response));
+    //}
 
-    @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity handleDataIntegrityViolation(DataIntegrityViolationException exception) throws JAXBException {
-        return ResponseEntity.badRequest().body(parser.convertToXML(new UnexpectedError(400, "Incorrect value in request.")));
-    }
+    //@ExceptionHandler({DataIntegrityViolationException.class})
+    //public ResponseEntity handleDataIntegrityViolation(DataIntegrityViolationException exception) throws JAXBException {
+    //    return ResponseEntity.badRequest().body(parser.convertToXML(new UnexpectedError(400, "Incorrect value in request.")));
+    //}
 
-    @ExceptionHandler({NumberFormatException.class})
-    public ResponseEntity handleNumberFormat(NumberFormatException exception) throws JAXBException {
-        return ResponseEntity.badRequest().body(parser.convertToXML(new UnexpectedError(400, "Incorrect value in URL.")));
-    }
+    //@ExceptionHandler({NumberFormatException.class})
+    //public ResponseEntity handleNumberFormat(NumberFormatException exception) throws JAXBException {
+    //    return ResponseEntity.badRequest().body(parser.convertToXML(new UnexpectedError(400, "Incorrect value in URL.")));
+    //}
 
-    @ExceptionHandler({NoSuchElementException.class})
-    public ResponseEntity handleNoSuchElement(NoSuchElementException exception) throws JAXBException {
-        return ResponseEntity.badRequest().body(parser.convertToXML(new SpaceMarineXMLResponse()));
-    }
+    //@ExceptionHandler({NoSuchElementException.class})
+    //public ResponseEntity handleNoSuchElement(NoSuchElementException exception) throws JAXBException {
+    //    return ResponseEntity.badRequest().body(parser.convertToXML(new SpaceMarineXMLResponse()));
+    //}
 
     //@ExceptionHandler({Exception.class})
     //public ResponseEntity handleError(Exception e) throws JAXBException {
     //    return ResponseEntity.internalServerError().body(parser.convertToXML(new UnexpectedError("Unexpected exception.")));
     //}
+
+    @ExceptionHandler({BindException.class})
+    public ResponseEntity handleError(BindException e) throws JAXBException {
+        return ResponseEntity.badRequest().body(parser.convertToXML(new UnexpectedError(400,"Incorrect value in filter.")));
+    }
 
 }

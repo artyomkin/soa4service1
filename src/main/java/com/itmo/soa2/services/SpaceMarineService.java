@@ -56,7 +56,7 @@ public class SpaceMarineService {
         }
 
         Map<String, String> searchParameters = parameters.entrySet().stream()
-                .filter(parameter -> !Arrays.asList("page", "size", "sort", "order").contains(parameter.getKey()))
+                .filter(parameter -> !Arrays.asList("page", "size", "sort", "order", "coordinatesX", "coordinatesY", "loyal", "meleeWeapon", "chapterName").contains(parameter.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Filter filter = buildFilter(searchParameters);
@@ -83,6 +83,36 @@ public class SpaceMarineService {
                         request.getPage()-1,
                         request.getSize())).getContent();
             }
+        }
+
+        Map<String, String> finalParameters = parameters;
+        if (parameters.get("coordinatesX") != null){
+            result = result.stream()
+                    .filter(spaceMarine -> spaceMarine.getCoordinates().getX() == Double.valueOf(finalParameters.get("coordinatesX")))
+                    .collect(Collectors.toList());
+        }
+        if (parameters.get("coordinatesY") != null){
+            result = result.stream()
+                    .filter(spaceMarine -> spaceMarine.getCoordinates().getY() == Double.valueOf(finalParameters.get("coordinatesY")))
+                    .collect(Collectors.toList());
+        }
+        if (parameters.get("loyal") != null){
+            result = result.stream()
+                    .filter(spaceMarine -> spaceMarine.getLoyal().toString().equals(finalParameters.get("loyal")))
+                    .collect(Collectors.toList());
+        }
+        if (parameters.get("meleeWeapon") != null){
+            result = result.stream()
+                    .filter(spaceMarine -> spaceMarine
+                            .getMeleeWeapon()
+                            .toString()
+                            .equals(finalParameters.get("meleeWeapon")))
+                    .collect(Collectors.toList());
+        }
+        if (parameters.get("chapterName") != null){
+            result = result.stream()
+                    .filter(spaceMarine -> spaceMarine.getChapter().getName().equals(finalParameters.get("chapterName")))
+                    .collect(Collectors.toList());
         }
 
         return SpaceMarineListXMLResponse.ok(result);
