@@ -57,7 +57,11 @@ public class StarshipService {
             return response;
         }
         SpaceMarine spaceMarine = optionalSpaceMarine.get();
-        if (spaceMarine.getStarshipId() != starshipId){
+        try{
+            if (!spaceMarine.getStarshipId().equals(starshipId)){
+                return new UnexpectedError(401, "Space marine was not on starship " + starshipId.toString() + ".");
+            }
+        } catch (NullPointerException e){
             return new UnexpectedError(401, "Space marine was not on starship " + starshipId.toString() + ".");
         }
         spaceMarine.setStarshipId(null);

@@ -52,6 +52,10 @@ public class SpaceMarine {
     @XmlElement(nillable = true)
     private Integer starshipId;
 
+    public Integer getStarshipId() {
+        return starshipId;
+    }
+
     public SpaceMarine(){
     }
     public SpaceMarine(SpaceMarineRequest req){

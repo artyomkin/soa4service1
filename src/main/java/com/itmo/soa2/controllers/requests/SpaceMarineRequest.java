@@ -34,7 +34,6 @@ public class SpaceMarineRequest {
     private MeleeWeapon meleeWeapon;
     @NotNull(message = "chapter")
     private Chapter chapter;
-    @NotNull(message = "starshipId")
     private Integer starshipId;
 }
 

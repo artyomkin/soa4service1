@@ -23,6 +23,7 @@ import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,7 +57,7 @@ public class SpaceMarineService {
         }
 
         Map<String, String> searchParameters = parameters.entrySet().stream()
-                .filter(parameter -> !Arrays.asList("page", "size", "sort", "order", "coordinatesX", "coordinatesY", "loyal", "meleeWeapon", "chapterName").contains(parameter.getKey()))
+                .filter(parameter -> !Arrays.asList("page", "size", "sort", "order", "coordinatesX", "coordinatesY", "loyal", "meleeWeapon", "chapterName", "chapterParentLegion", "chapterWorld").contains(parameter.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Filter filter = buildFilter(searchParameters);
@@ -87,14 +88,22 @@ public class SpaceMarineService {
 
         Map<String, String> finalParameters = parameters;
         if (parameters.get("coordinatesX") != null){
-            result = result.stream()
-                    .filter(spaceMarine -> spaceMarine.getCoordinates().getX() == Double.valueOf(finalParameters.get("coordinatesX")))
-                    .collect(Collectors.toList());
+            try{
+                result = result.stream()
+                        .filter(spaceMarine -> spaceMarine.getCoordinates().getX().equals(Double.valueOf(finalParameters.get("coordinatesX"))))
+                        .collect(Collectors.toList());
+            } catch (NumberFormatException e){
+                result.clear();
+            }
         }
         if (parameters.get("coordinatesY") != null){
+            try{
             result = result.stream()
-                    .filter(spaceMarine -> spaceMarine.getCoordinates().getY() == Double.valueOf(finalParameters.get("coordinatesY")))
+                    .filter(spaceMarine -> spaceMarine.getCoordinates().getY().equals(Double.valueOf(finalParameters.get("coordinatesY"))))
                     .collect(Collectors.toList());
+            } catch (NumberFormatException e){
+                result.clear();
+            }
         }
         if (parameters.get("loyal") != null){
             result = result.stream()
@@ -114,6 +123,16 @@ public class SpaceMarineService {
                     .filter(spaceMarine -> spaceMarine.getChapter().getName().equals(finalParameters.get("chapterName")))
                     .collect(Collectors.toList());
         }
+        if (parameters.get("chapterParentLegion") != null){
+            result = result.stream()
+                    .filter(spaceMarine -> spaceMarine.getChapter().getParentLegion().equals(finalParameters.get("chapterParentLegion")))
+                    .collect(Collectors.toList());
+        }
+        if (parameters.get("chapterWorld") != null){
+            result = result.stream()
+                    .filter(spaceMarine -> spaceMarine.getChapter().getWorld().equals(finalParameters.get("chapterWorld")))
+                    .collect(Collectors.toList());
+        }
 
         return SpaceMarineListXMLResponse.ok(result);
     }
@@ -122,8 +141,11 @@ public class SpaceMarineService {
             SpaceMarine spaceMarine = new SpaceMarine(spaceMarineRequest);
             Coordinates coordinates = coordinatesRepo.save(spaceMarine.getCoordinates());
             spaceMarine.setCoordinates(coordinates);
-            if (!starshipRepo.existsById(spaceMarine.getStarshipId())){
+            if (spaceMarine.getStarshipId() != null && !starshipRepo.existsById(spaceMarine.getStarshipId())){
                 throw new IllegalArgumentException("starshipId");
+            }
+            if (chapterRepo.existsByName(spaceMarine.getChapter().getName())){
+                throw new IllegalArgumentException("chapterName");
             }
             return new SpaceMarineXMLResponse(spaceMarineRepo.save(spaceMarine));
         } catch (IllegalArgumentException e){
@@ -176,6 +198,7 @@ public class SpaceMarineService {
         return response;
     }
 
+    @Transactional
     public XMLResponse update(Integer id, SpaceMarineRequest spaceMarineRequest) {
         SpaceMarineXMLResponse response = new SpaceMarineXMLResponse();
         if (spaceMarineRepo.findById(id).isPresent()){
@@ -184,10 +207,14 @@ public class SpaceMarineService {
                 spaceMarine.setId(id);
                 Coordinates coordinates = coordinatesRepo.save(spaceMarine.getCoordinates());
                 spaceMarine.setCoordinates(coordinates);
-                if (!chapterRepo.existsById(spaceMarine.getName())){
+                String oldName = spaceMarineRepo.findById(id).get().getChapter().getName();
+                if (!chapterRepo.existsByName(spaceMarine.getChapter().getName())){
                      chapterRepo.save(spaceMarine.getChapter());
+                     chapterRepo.deleteByName(oldName);
+                } else if (!spaceMarine.getChapter().getName().equals(oldName)){
+                    throw new IllegalArgumentException("chapterName");
                 }
-                if (!starshipRepo.existsById(spaceMarine.getStarshipId())){
+                if (spaceMarine.getStarshipId() != null && !starshipRepo.existsById(spaceMarine.getStarshipId())){
                     throw new IllegalArgumentException("starshipId");
                 }
                 response.setSpaceMarine(spaceMarineRepo.save(spaceMarine));
@@ -204,7 +231,14 @@ public class SpaceMarineService {
         return response;
     }
 
+    @Transactional
     public void delete(Integer id) {
+        SpaceMarine spaceMarine = spaceMarineRepo.findById(id).get();
+        if (spaceMarine == null){
+            return;
+        }
+        chapterRepo.deleteByName(spaceMarine.getChapter().getName());
+        coordinatesRepo.deleteById(spaceMarine.getCoordinates().getId());
         spaceMarineRepo.deleteById(id);
     }
 
