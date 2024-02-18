@@ -3,7 +3,7 @@
    <soapenv:Header/>
    <soapenv:Body>
       <gs:createSpaceMarineRequest>
-        <gs:name>kisa</gs:name>
+        <gs:name>dimon</gs:name>
         <gs:coordinates>
           <gs:x>10</gs:x>
           <gs:y>11</gs:y>
@@ -13,7 +13,7 @@
         <gs:height>170</gs:height>
         <gs:meleeWeapon>MANREAPER</gs:meleeWeapon>
         <gs:chapter>
-          <gs:name>a123sd</gs:name>
+          <gs:name>axdsawlksjdfl23sd</gs:name>
           <gs:parentLegion>chapterParentLegion</gs:parentLegion>
           <gs:world>chapterWorld</gs:world>
         </gs:chapter>
