@@ -1,0 +1,220 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="https://localhost:8080/api/v1/space-marines"
+           targetNamespace="https://localhost:8080/api/v1/space-marines" elementFormDefault="qualified">
+
+    <xs:element name="getSpaceMarineRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="getAllSpaceMarinesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int" nillable="true"/>
+                <xs:element name="creationDate" type="xs:date" nillable="true"/>
+                <xs:element name="page" type="xs:int" nillable="true"/>
+                <xs:element name="size" type="xs:int" nillable="true"/>
+                <xs:element name="sort" type="xs:string" nillable="true" />
+                <xs:element name="order" type="tns:order" nillable="true"/>
+                <xs:element name="name" type="xs:string" nillable="true"/>
+                <xs:element name="coordinatesX" type="xs:double" nillable="true"/>
+                <xs:element name="coordinatesY" type="xs:double" nillable="true"/>
+                <xs:element name="loyal" type="xs:boolean" nillable="true"/>
+                <xs:element name="health" type="xs:double" nillable="true"/>
+                <xs:element name="height" type="xs:double" nillable="true"/>
+                <xs:element name="meleeWeapon" type="xs:string" nillable="true"/>
+                <xs:element name="chapterName" type="xs:string" nillable="true"/>
+                <xs:element name="chapterParentLegion" type="xs:string" nillable="true"/>
+                <xs:element name="chapterWorld" type="xs:string" nillable="true"/>
+                <xs:element name="starshipId" type="xs:int" nillable="true"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createSpaceMarineRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="coordinates" type="tns:createCoordinates"/>
+                <xs:element name="health" type="xs:double"/>
+                <xs:element name="loyal" type="xs:boolean"/>
+                <xs:element name="height" type="xs:double"/>
+                <xs:element name="meleeWeapon" type="tns:meleeWeapon"/>
+                <xs:element name="chapter" type="tns:createChapter"/>
+                <xs:element name="starshipId" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createStarshipRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createStarshipResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="starship" type="tns:starship"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="unloadSpaceMarineRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="spaceMarineId" type="xs:int"/>
+                <xs:element name="starshipId" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="unloadSpaceMarineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="code" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="createCoordinates">
+        <xs:sequence>
+            <xs:element name="x" type="xs:double"/>
+            <xs:element name="y" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="createChapter">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="parentLegion" type="xs:string"/>
+            <xs:element name="world" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="deleteSpaceMarineRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteSpaceMarineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="code" type="xs:int" default="204"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMinSpaceMarineRequest">
+    </xs:element>
+
+    <xs:element name="countByHealthRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="health" type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="countByHealthResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="count" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteByMeleeWeaponRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="meleeWeapon" type="tns:meleeWeapon"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="deleteByMeleeWeaponResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="code" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getSpaceMarineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="spaceMarine" type="tns:spaceMarine"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAllSpaceMarinesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="spaceMarines" type="tns:spaceMarine" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="spaceMarine">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="coordinates" type="tns:coordinates"/>
+            <xs:element name="creationDate" type="xs:date"/>
+            <xs:element name="health" type="xs:double"/>
+            <xs:element name="loyal" type="xs:boolean"/>
+            <xs:element name="height" type="xs:double"/>
+            <xs:element name="meleeWeapon" type="tns:meleeWeapon"/>
+            <xs:element name="chapter" type="tns:chapter"/>
+            <xs:element name="starshipId" type="xs:int" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="starship">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int"/>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="coordinates">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int"/>
+            <xs:element name="x" type="xs:double"/>
+            <xs:element name="y" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="chapter">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="parentLegion" type="xs:string"/>
+            <xs:element name="world" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="meleeWeapon">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CHAIN_AXE"/>
+            <xs:enumeration value="MANREAPER"/>
+            <xs:enumeration value="POWER_BLADE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="order">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ASC"/>
+            <xs:enumeration value="DESC"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>
