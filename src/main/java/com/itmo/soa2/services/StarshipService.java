@@ -9,6 +9,8 @@ import com.itmo.soa2.controllers.responses.XMLResponse;
 import com.itmo.soa2.controllers.responses.exception_response.UnexpectedError;
 import com.itmo.soa2.entities.SpaceMarine;
 import com.itmo.soa2.entities.Starship;
+import com.itmo.soa2.exceptions.StarshipWrongFieldsException;
+import com.itmo.soa2.exceptions.UnloadWrongIdException;
 import com.itmo.soa2.repos.SpaceMarineRepository;
 import com.itmo.soa2.repos.StarshipRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +26,14 @@ public class StarshipService {
     @Autowired
     SpaceMarineRepository spaceMarineRepository;
 
-    public XMLResponse save(Integer id, String name){
+    public Starship save(Integer id, String name) throws StarshipWrongFieldsException {
         if (starshipRepo.findById(id).isPresent()){
-            StarshipWrongFieldsXMLResponse response = new StarshipWrongFieldsXMLResponse();
-            response.setWrongFields(Arrays.asList("id"));
-            return response;
+            throw new StarshipWrongFieldsException("id");
         }
         Starship starship = new Starship();
         starship.setId(id);
         starship.setName(name);
-        StarshipXMLResponse response = new StarshipXMLResponse();
-        response.setStarships(Arrays.asList(starshipRepo.save(starship)));
-        return response;
+        return starshipRepo.save(starship);
     }
 
     public XMLResponse findAll() {
@@ -44,33 +42,24 @@ public class StarshipService {
         return response;
     }
 
-    public XMLResponse unload(Integer starshipId, Integer spaceMarineId) {
+    public int unload(Integer starshipId, Integer spaceMarineId) throws UnloadWrongIdException {
         Optional<SpaceMarine> optionalSpaceMarine = spaceMarineRepository.findById(spaceMarineId);
         if (optionalSpaceMarine.isEmpty()){
-            LandXMLWrongFields response = new LandXMLWrongFields();
-            response.setWrongFields(Arrays.asList("spaceMarineId"));
-            return response;
+            throw new UnloadWrongIdException("spaceMarineId");
         }
         if (starshipRepo.findById(starshipId).isEmpty()){
-            LandXMLWrongFields response = new LandXMLWrongFields();
-            response.setWrongFields(Arrays.asList("starshipId"));
-            return response;
+            throw new UnloadWrongIdException("spaceMarineId");
         }
         SpaceMarine spaceMarine = optionalSpaceMarine.get();
         try{
             if (!spaceMarine.getStarshipId().equals(starshipId)){
-                return new UnexpectedError(401, "Space marine was not on starship " + starshipId.toString() + ".");
+                throw new UnloadWrongIdException("spaceMarineId and starshipId");
             }
         } catch (NullPointerException e){
-            return new UnexpectedError(401, "Space marine was not on starship " + starshipId.toString() + ".");
+            throw new UnloadWrongIdException("spaceMarineId and starshipId");
         }
         spaceMarine.setStarshipId(null);
         spaceMarineRepository.save(spaceMarine);
-        XMLResponse response = new XMLResponse() {
-            public Integer getCode() {
-                return 204;
-            }
-        };
-        return null;
+        return 204;
     }
 }

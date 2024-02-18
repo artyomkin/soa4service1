@@ -5,6 +5,7 @@ import com.itmo.soa2.controllers.responses.SpaceMarineXMLResponse;
 import com.itmo.soa2.entities.domain.Chapter;
 import com.itmo.soa2.entities.domain.Coordinates;
 import com.itmo.soa2.entities.domain.MeleeWeapon;
+import https.localhost._8080.api.v1.space_marines.CreateSpaceMarineRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -52,15 +53,11 @@ public class SpaceMarine {
     @XmlElement(nillable = true)
     private Integer starshipId;
 
-    public Integer getStarshipId() {
-        return starshipId;
-    }
-
-    public SpaceMarine(){
-    }
-    public SpaceMarine(SpaceMarineRequest req){
+    public SpaceMarine(CreateSpaceMarineRequest req) {
         this.name = req.getName();
-        this.coordinates = req.getCoordinates();
+        this.coordinates = new Coordinates();
+        this.coordinates.setX(req.getCoordinates().getX());
+        this.coordinates.setY(req.getCoordinates().getY());
         this.creationDate = new Date();
         String pattern = "yyyy-MM-dd HH:mm:ss.SSS";
         DateFormat df = new SimpleDateFormat(pattern);
@@ -68,16 +65,104 @@ public class SpaceMarine {
         this.creationDateStr = this.creationDateStr.replaceAll("\\s+", "T");
         this.creationDateStr += "Z";
         this.health = req.getHealth();
-        if (req.getLoyal().equals("true")){
-            this.loyal = true;
-        } else if (req.getLoyal().equals("false")) {
-            this.loyal = false;
-        } else {
-            throw new IllegalArgumentException("loyal");
-        }
+        this.loyal = req.isLoyal();
         this.height = req.getHeight();
-        this.meleeWeapon = req.getMeleeWeapon();
-        this.chapter = req.getChapter();
+        this.meleeWeapon = MeleeWeapon.valueOf(req.getMeleeWeapon().toString());
+        this.chapter = new Chapter();
+        this.chapter.setName(req.getChapter().getName());
+        this.chapter.setParentLegion(req.getChapter().getParentLegion());
+        this.chapter.setWorld(req.getChapter().getWorld());
         this.starshipId = req.getStarshipId();
+    }
+
+    public Integer getStarshipId() {
+        return starshipId;
+    }
+
+    public SpaceMarine(){
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getCreationDateStr() {
+        return creationDateStr;
+    }
+
+    public void setCreationDateStr(String creationDateStr) {
+        this.creationDateStr = creationDateStr;
+    }
+
+    public Double getHealth() {
+        return health;
+    }
+
+    public void setHealth(Double health) {
+        this.health = health;
+    }
+
+    public Boolean getLoyal() {
+        return loyal;
+    }
+
+    public void setLoyal(Boolean loyal) {
+        this.loyal = loyal;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public MeleeWeapon getMeleeWeapon() {
+        return meleeWeapon;
+    }
+
+    public void setMeleeWeapon(MeleeWeapon meleeWeapon) {
+        this.meleeWeapon = meleeWeapon;
+    }
+
+    public Chapter getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(Chapter chapter) {
+        this.chapter = chapter;
+    }
+
+    public void setStarshipId(Integer starshipId) {
+        this.starshipId = starshipId;
     }
 }

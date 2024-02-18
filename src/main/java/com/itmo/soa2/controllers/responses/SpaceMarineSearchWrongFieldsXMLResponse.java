@@ -15,6 +15,10 @@ public class SpaceMarineSearchWrongFieldsXMLResponse implements XMLResponse {
     @XmlElement(name="wrongField")
     private List<String> wrongFields;
 
+    public SpaceMarineSearchWrongFieldsXMLResponse(List<String> wrongFields) {
+        this.wrongFields = wrongFields;
+    }
+
     @Override
     public Integer getCode() {
         return 400;
