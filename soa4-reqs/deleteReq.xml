@@ -1,0 +1,10 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+				  xmlns:gs="https://localhost:8080/api/v1/space-marines">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <gs:deleteSpaceMarineRequest>
+        <gs:id>3</gs:id>
+      </gs:deleteSpaceMarineRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+

@@ -1,0 +1,24 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+				  xmlns:gs="https://localhost:8080/api/v1/space-marines">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <gs:createSpaceMarineRequest>
+        <gs:name>kisa</gs:name>
+        <gs:coordinates>
+          <gs:x>10</gs:x>
+          <gs:y>11</gs:y>
+        </gs:coordinates>
+        <gs:health>4</gs:health>
+        <gs:loyal>true</gs:loyal>
+        <gs:height>170</gs:height>
+        <gs:meleeWeapon>MANREAPER</gs:meleeWeapon>
+        <gs:chapter>
+          <gs:name>a123sd</gs:name>
+          <gs:parentLegion>chapterParentLegion</gs:parentLegion>
+          <gs:world>chapterWorld</gs:world>
+        </gs:chapter>
+        <gs:starshipId>1</gs:starshipId>
+      </gs:createSpaceMarineRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+

@@ -1,0 +1,11 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+				  xmlns:gs="https://localhost:8080/api/v1/space-marines">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <gs:createStarshipRequest>
+        <gs:id>2</gs:id>
+        <gs:name>kisa</gs:name>
+      </gs:createStarshipRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
