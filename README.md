@@ -12,8 +12,10 @@ WSDL будет доступен по ссылке https://localhost:8080/ws/soa
 Как сделать запрос на получение всех SpaceMarine
 
 Заходим в консоль и выполняем команду:
+```bash
 cd path/to/soa4service1/soa4-reqs
 curl --header "content-type: text/xml" -d @getAllReq.xml https://localhost:8080/ws --insecure
+```
 
 Получаем
 ```xml
