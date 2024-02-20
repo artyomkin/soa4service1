@@ -1,6 +1,6 @@
 package com.itmo.soa2.controllers.requests.constraints;
 
-import https.localhost._8080.api.v1.space_marines.GetAllSpaceMarinesRequest;
+import _8080.api.v1.space_marines.GetAllSpaceMarinesRequest;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

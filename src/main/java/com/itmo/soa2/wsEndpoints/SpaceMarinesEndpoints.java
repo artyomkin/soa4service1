@@ -5,7 +5,7 @@ import com.itmo.soa2.entities.domain.MeleeWeapon;
 import com.itmo.soa2.exceptions.InvalidSortParamsException;
 import com.itmo.soa2.exceptions.SpaceMarineWrongFieldsException;
 import com.itmo.soa2.services.SpaceMarineService;
-import https.localhost._8080.api.v1.space_marines.*;
+import _8080.api.v1.space_marines.*;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -16,7 +16,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 @Endpoint
 public class SpaceMarinesEndpoints {
 
-    private static final String NAMESPACE_URI = "https://localhost:8080/api/v1/space-marines";
+    private static final String NAMESPACE_URI = "8080/api/v1/space-marines";
     @Autowired
     private SpaceMarineService spaceMarineService;
 

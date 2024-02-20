@@ -5,7 +5,7 @@ import com.itmo.soa2.controllers.responses.SpaceMarineXMLResponse;
 import com.itmo.soa2.entities.domain.Chapter;
 import com.itmo.soa2.entities.domain.Coordinates;
 import com.itmo.soa2.entities.domain.MeleeWeapon;
-import https.localhost._8080.api.v1.space_marines.CreateSpaceMarineRequest;
+import _8080.api.v1.space_marines.CreateSpaceMarineRequest;
 import lombok.Getter;
 import lombok.Setter;
 

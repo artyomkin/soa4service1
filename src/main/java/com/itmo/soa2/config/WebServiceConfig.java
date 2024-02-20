@@ -28,7 +28,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("Soa4Port");
         wsdl11Definition.setLocationUri("/ws");
-        wsdl11Definition.setTargetNamespace("https://localhost:8080/api/v1/space-marines");
+        wsdl11Definition.setTargetNamespace("8080/api/v1/space-marines");
         wsdl11Definition.setSchema(soa4Schema);
         return wsdl11Definition;
     }
