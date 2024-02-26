@@ -49,6 +49,38 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="updateSpaceMarineRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="coordinates" type="tns:createCoordinates"/>
+                <xs:element name="health" type="xs:double"/>
+                <xs:element name="loyal" type="xs:boolean"/>
+                <xs:element name="height" type="xs:double"/>
+                <xs:element name="meleeWeapon" type="tns:meleeWeapon"/>
+                <xs:element name="chapter" type="tns:createChapter"/>
+                <xs:element name="starshipId" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="updateSpaceMarineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="spaceMarine" type="tns:spaceMarine"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createSpaceMarineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="spaceMarine" type="tns:spaceMarine"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="createStarshipRequest">
         <xs:complexType>
             <xs:sequence>
@@ -115,6 +147,14 @@
     </xs:element>
 
     <xs:element name="getMinSpaceMarineRequest">
+    </xs:element>
+
+    <xs:element name="getMinSpaceMarineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="spaceMarine" type="tns:spaceMarine"/>
+            </xs:sequence>
+        </xs:complexType>
     </xs:element>
 
     <xs:element name="countByHealthRequest">
@@ -216,5 +256,6 @@
             <xs:enumeration value="DESC"/>
         </xs:restriction>
     </xs:simpleType>
+
 
 </xs:schema>

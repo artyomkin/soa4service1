@@ -3,6 +3,8 @@ package com.itmo.soa2.wsEndpoints;
 import com.itmo.soa2.entities.SpaceMarine;
 import com.itmo.soa2.entities.domain.MeleeWeapon;
 import com.itmo.soa2.exceptions.InvalidSortParamsException;
+import com.itmo.soa2.exceptions.ServiceFault;
+import com.itmo.soa2.exceptions.ServiceFaultException;
 import com.itmo.soa2.exceptions.SpaceMarineWrongFieldsException;
 import com.itmo.soa2.services.SpaceMarineService;
 import _8080.api.v1.space_marines.*;
@@ -23,10 +25,14 @@ public class SpaceMarinesEndpoints {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getSpaceMarineRequest")
     @ResponsePayload
     public GetSpaceMarineResponse getSpaceMarineById(@RequestPayload GetSpaceMarineRequest getSpaceMarineRequest){
-        SpaceMarine spaceMarine = spaceMarineService.findById(getSpaceMarineRequest.getId());
-        GetSpaceMarineResponse response = new GetSpaceMarineResponse();
-        response.setSpaceMarine(SpaceMarineConverter.convertToWsSpaceMarine(spaceMarine));
-        return response;
+        try{
+            SpaceMarine spaceMarine = spaceMarineService.findById(getSpaceMarineRequest.getId());
+            GetSpaceMarineResponse response = new GetSpaceMarineResponse();
+            response.setSpaceMarine(SpaceMarineConverter.convertToWsSpaceMarine(spaceMarine));
+            return response;
+        } catch (SpaceMarineWrongFieldsException e) {
+            throw new ServiceFaultException(e.getMessage(), new ServiceFault("400", e.getMessage()));
+        }
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getAllSpaceMarinesRequest")
@@ -42,9 +48,17 @@ public class SpaceMarinesEndpoints {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createSpaceMarineRequest")
     @ResponsePayload
-    public GetSpaceMarineResponse createSpaceMarine(@RequestPayload CreateSpaceMarineRequest createSpaceMarinesRequest) throws SpaceMarineWrongFieldsException {
-        GetSpaceMarineResponse response = new GetSpaceMarineResponse();
+    public CreateSpaceMarineResponse createSpaceMarine(@RequestPayload CreateSpaceMarineRequest createSpaceMarinesRequest) throws SpaceMarineWrongFieldsException {
+        CreateSpaceMarineResponse response = new CreateSpaceMarineResponse();
         response.setSpaceMarine(SpaceMarineConverter.convertToWsSpaceMarine(spaceMarineService.save(createSpaceMarinesRequest)));
+        return response;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updateSpaceMarineRequest")
+    @ResponsePayload
+    public UpdateSpaceMarineResponse updateSpaceMarine(@RequestPayload UpdateSpaceMarineRequest updateSpaceMarinesRequest) throws SpaceMarineWrongFieldsException {
+        UpdateSpaceMarineResponse response = new UpdateSpaceMarineResponse();
+        response.setSpaceMarine(SpaceMarineConverter.convertToWsSpaceMarine(spaceMarineService.update(updateSpaceMarinesRequest.getId(), updateSpaceMarinesRequest)));
         return response;
     }
 
@@ -59,9 +73,9 @@ public class SpaceMarinesEndpoints {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getMinSpaceMarineRequest")
     @ResponsePayload
-    public GetSpaceMarineResponse getMinSpaceMarine() {
+    public GetMinSpaceMarineResponse getMinSpaceMarine() {
         SpaceMarine spaceMarine = spaceMarineService.getMinByCoords();
-        GetSpaceMarineResponse response = new GetSpaceMarineResponse();
+        GetMinSpaceMarineResponse response = new GetMinSpaceMarineResponse();
         response.setSpaceMarine(SpaceMarineConverter.convertToWsSpaceMarine(spaceMarine));
         return response;
     }

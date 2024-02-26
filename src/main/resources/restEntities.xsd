@@ -1,0 +1,42 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="8080/api/v1/space-marines"
+           targetNamespace="8080/api/v1/space-marines" elementFormDefault="qualified">
+    <xs:element name="SpaceMarine">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="coordinates" type="tns:coordinates"/>
+                <xs:element name="creationDate" type="xs:date"/>
+                <xs:element name="health" type="xs:double"/>
+                <xs:element name="loyal" type="xs:boolean"/>
+                <xs:element name="height" type="xs:double"/>
+                <xs:element name="meleeWeapon" type="tns:meleeWeapon"/>
+                <xs:element name="chapter" type="tns:chapter"/>
+                <xs:element name="starshipId" type="xs:int" nillable="true"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="coordinates">
+        <xs:sequence>
+            <xs:element name="x" type="xs:double"/>
+            <xs:element name="y" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="chapter">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="parentLegion" type="xs:string"/>
+            <xs:element name="world" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="meleeWeapon">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CHAIN_AXE"/>
+            <xs:enumeration value="MANREAPER"/>
+            <xs:enumeration value="POWER_BLADE"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

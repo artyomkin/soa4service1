@@ -1,5 +1,6 @@
 package com.itmo.soa2.entities;
 
+import _8080.api.v1.space_marines.UpdateSpaceMarineRequest;
 import com.itmo.soa2.controllers.requests.SpaceMarineRequest;
 import com.itmo.soa2.controllers.responses.SpaceMarineXMLResponse;
 import com.itmo.soa2.entities.domain.Chapter;
@@ -54,6 +55,28 @@ public class SpaceMarine {
     private Integer starshipId;
 
     public SpaceMarine(CreateSpaceMarineRequest req) {
+        this.name = req.getName();
+        this.coordinates = new Coordinates();
+        this.coordinates.setX(req.getCoordinates().getX());
+        this.coordinates.setY(req.getCoordinates().getY());
+        this.creationDate = new Date();
+        String pattern = "yyyy-MM-dd HH:mm:ss.SSS";
+        DateFormat df = new SimpleDateFormat(pattern);
+        this.creationDateStr = df.format(this.creationDate);
+        this.creationDateStr = this.creationDateStr.replaceAll("\\s+", "T");
+        this.creationDateStr += "Z";
+        this.health = req.getHealth();
+        this.loyal = req.isLoyal();
+        this.height = req.getHeight();
+        this.meleeWeapon = MeleeWeapon.valueOf(req.getMeleeWeapon().toString());
+        this.chapter = new Chapter();
+        this.chapter.setName(req.getChapter().getName());
+        this.chapter.setParentLegion(req.getChapter().getParentLegion());
+        this.chapter.setWorld(req.getChapter().getWorld());
+        this.starshipId = req.getStarshipId();
+    }
+
+    public SpaceMarine(UpdateSpaceMarineRequest req) {
         this.name = req.getName();
         this.coordinates = new Coordinates();
         this.coordinates.setX(req.getCoordinates().getX());

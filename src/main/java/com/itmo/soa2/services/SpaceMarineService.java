@@ -1,8 +1,10 @@
 package com.itmo.soa2.services;
 
+import _8080.api.v1.space_marines.UpdateSpaceMarineRequest;
 import com.itmo.soa2.controllers.requests.SpaceMarineRequest;
 import com.itmo.soa2.controllers.responses.*;
 import com.itmo.soa2.entities.SpaceMarine;
+import com.itmo.soa2.entities.domain.Chapter;
 import com.itmo.soa2.entities.domain.Coordinates;
 import com.itmo.soa2.entities.domain.MeleeWeapon;
 import com.itmo.soa2.exceptions.InvalidSortParamsException;
@@ -44,6 +46,7 @@ public class SpaceMarineService {
         if (!sortIsValid(parameters.get("sort"), parameters.get("order"))){
             throw new InvalidSortParamsException("Invalid sort params.", Arrays.asList("sort", "order"));
         }
+        parameters.entrySet().stream().forEach(entry -> System.out.println(entry.getKey() + " " + entry.getValue()));
         Map<String, String> searchParameters = parameters.entrySet().stream()
                 .filter(parameter -> !Arrays.asList("page", "size", "sort", "order", "coordinatesX", "coordinatesY", "loyal", "meleeWeapon", "chapterName", "chapterParentLegion", "chapterWorld").contains(parameter.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -75,11 +78,6 @@ public class SpaceMarineService {
                         Integer.parseInt(parameters.get("page")) - 1,
                         Integer.parseInt(parameters.get("size")))).getContent();
             }
-        }
-        if (result.size() > 0){
-            result.forEach(sm -> System.out.println(sm.getId()));
-        } else {
-            System.out.println("result is empty.");
         }
         Map<String, String> finalParameters = parameters;
         if (parameters.get("coordinatesX") != null){
@@ -129,6 +127,11 @@ public class SpaceMarineService {
                     .collect(Collectors.toList());
         }
 
+        if (result.size() > 0){
+            result.forEach(sm -> System.out.println(sm.getId()));
+        } else {
+            System.out.println("result is empty.");
+        }
         return result;
     }
     public SpaceMarine save(CreateSpaceMarineRequest createSpaceMarineRequest) throws SpaceMarineWrongFieldsException {
@@ -175,6 +178,9 @@ public class SpaceMarineService {
                     }
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        resultParameters = resultParameters.entrySet().stream()
+                .filter(entry -> !Objects.equals(entry.getValue(), "0") && !entry.getValue().isBlank())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return resultParameters;
     }
@@ -183,42 +189,38 @@ public class SpaceMarineService {
         return sort == null && order == null || sort != null && order != null;
     }
 
-    public SpaceMarine findById(Integer id) {
-        return spaceMarineRepo.findById(id).get();
+    public SpaceMarine findById(Integer id) throws SpaceMarineWrongFieldsException {
+        try{
+            return spaceMarineRepo.findById(id).get();
+        } catch (NoSuchElementException e){
+            System.out.println("Space marine with id = " + id + " not found.");
+            throw new SpaceMarineWrongFieldsException("id");
+        }
     }
 
-    //@Transactional
-    //public XMLResponse update(Integer id, SpaceMarineRequest spaceMarineRequest) {
-    //    SpaceMarineXMLResponse response = new SpaceMarineXMLResponse();
-    //    if (spaceMarineRepo.findById(id).isPresent()){
-    //        try {
-    //            SpaceMarine spaceMarine = new SpaceMarine(spaceMarineRequest);
-    //            spaceMarine.setId(id);
-    //            Coordinates coordinates = coordinatesRepo.save(spaceMarine.getCoordinates());
-    //            spaceMarine.setCoordinates(coordinates);
-    //            String oldName = spaceMarineRepo.findById(id).get().getChapter().getName();
-    //            if (!chapterRepo.existsByName(spaceMarine.getChapter().getName())){
-    //                 chapterRepo.save(spaceMarine.getChapter());
-    //                 chapterRepo.deleteByName(oldName);
-    //            } else if (!spaceMarine.getChapter().getName().equals(oldName)){
-    //                throw new IllegalArgumentException("chapterName");
-    //            }
-    //            if (spaceMarine.getStarshipId() != null && !starshipRepo.existsById(spaceMarine.getStarshipId())){
-    //                throw new IllegalArgumentException("starshipId");
-    //            }
-    //            response.setSpaceMarine(spaceMarineRepo.save(spaceMarine));
-    //        } catch (IllegalArgumentException e){
-    //            SpaceMarineSearchWrongFieldsXMLResponse errorResposne = new SpaceMarineSearchWrongFieldsXMLResponse();
-    //            errorResposne.setWrongFields(Arrays.asList(e.getMessage()));
-    //            return errorResposne;
-    //        }
-    //    } else {
-    //        SpaceMarineSearchWrongFieldsXMLResponse errorResposne = new SpaceMarineSearchWrongFieldsXMLResponse();
-    //        errorResposne.setWrongFields(Arrays.asList("id"));
-    //        return errorResposne;
-    //    }
-    //    return response;
-    //}
+    @Transactional
+    public SpaceMarine update(Integer id, UpdateSpaceMarineRequest updateSpaceMarineRequest) throws SpaceMarineWrongFieldsException {
+        SpaceMarineXMLResponse response = new SpaceMarineXMLResponse();
+        if (spaceMarineRepo.findById(id).isPresent()){
+            SpaceMarine spaceMarine = new SpaceMarine(updateSpaceMarineRequest);
+            spaceMarine.setId(id);
+            Coordinates coordinates = coordinatesRepo.save(spaceMarine.getCoordinates());
+            spaceMarine.setCoordinates(coordinates);
+            String oldName = spaceMarineRepo.findById(id).get().getChapter().getName();
+            String newName = spaceMarine.getChapter().getName();
+            if (!newName.equals(oldName) && chapterRepo.existsByName(newName)){
+                throw new IllegalArgumentException("chapterName");
+            }
+            chapterRepo.save(spaceMarine.getChapter());
+            if (spaceMarine.getStarshipId() != null && !starshipRepo.existsById(spaceMarine.getStarshipId())){
+                throw new IllegalArgumentException("starshipId");
+            }
+            spaceMarine = spaceMarineRepo.save(spaceMarine);
+            return spaceMarine;
+        } else {
+            throw new SpaceMarineWrongFieldsException("id");
+        }
+    }
 
     @Transactional
     public void delete(Integer id) {
