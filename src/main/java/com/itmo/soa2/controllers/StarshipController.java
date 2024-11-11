@@ -21,15 +21,15 @@ public class StarshipController {
     @Autowired
     StarshipService starshipService;
 
-    //@PostMapping("{id}/{name}")
-    //public ResponseEntity createStarship(@PathVariable("id") Integer id, @PathVariable("name") String name){
-    //    XMLResponse response = starshipService.save(id, name);
-    //    try {
-    //        return new ResponseEntity(parser.convertToXML(response), HttpStatus.valueOf(response.getCode()));
-    //    } catch (JAXBException e) {
-    //        return ResponseEntity.internalServerError().body(e.getMessage());
-    //    }
-    //}
+    @PostMapping("{id}/{name}")
+    public ResponseEntity createStarship(@PathVariable("id") Integer id, @PathVariable("name") String name){
+        XMLResponse response = starshipService.save(id, name);
+        try {
+            return new ResponseEntity(parser.convertToXML(response), HttpStatus.valueOf(response.getCode()));
+        } catch (JAXBException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 
     //@GetMapping
     //public ResponseEntity getStarships(){
